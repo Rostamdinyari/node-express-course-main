@@ -9,6 +9,7 @@ app.use(express.static('./public'))
 app.use(bodyParser.json());
 const tasks = require('./routs/tasks')
 require('dotenv').config()
+const notFound = require('./middleware/not-found')
 
 
 
@@ -22,7 +23,7 @@ require('dotenv').config()
 // router.put('/:id', updatePerson)
 // router.delete('/:id', deletePerson)
 
-/*
+
 // Create a MySQL connection pool
 const pool = mysql.createPool({
   host: "127.0.0.1",
@@ -33,16 +34,12 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0
 });
-*/
-app.get('/get',(req,res)=>{
-  console.log('Task Manger!')
-  res.send(tasks)
-})
 
 app.use('/api/v1/tasks',tasks)
+app.use(notFound)
 
 const start = async ()=>{
-  try{
+  try{ 
     await connectDB(process.env.MONGO_URI)
     app.listen(port);
     console.log(`Server is up runing at ${port}`);
